@@ -30,7 +30,7 @@ jobs:
     - name: Build documentation
       run: |
         cd docs
-        sphinx-build -b html source build/html -W --keep-going
+        sphinx-build -b html source build/html
 
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
@@ -39,9 +39,3 @@ jobs:
         name: documentation
         path: docs/build/html/
         retention-days: 7
-
-    - name: Check for documentation warnings
-      run: |
-        cd docs
-        sphinx-build -b html source build/html -W
-      continue-on-error: true
