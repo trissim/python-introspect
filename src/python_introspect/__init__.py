@@ -3,6 +3,10 @@ python-introspect: Pure Python introspection toolkit
 
 This package provides utilities for introspecting Python functions, methods,
 dataclasses, and type hints.
+
+Extensibility:
+    Use register_namespace_provider() and register_type_resolver() to extend
+    type resolution for framework-specific types (lazy configs, proxies, etc.)
 """
 
 __version__ = "0.1.0"
@@ -12,6 +16,9 @@ from .signature_analyzer import (
     ParameterInfo,
     DocstringInfo,
     DocstringExtractor,
+    # Plugin registration
+    register_namespace_provider,
+    register_type_resolver,
 )
 from .unified_parameter_analyzer import (
     UnifiedParameterAnalyzer,
@@ -32,6 +39,9 @@ __all__ = [
     "ParameterInfo",
     "DocstringInfo",
     "DocstringExtractor",
+    # Plugin registration
+    "register_namespace_provider",
+    "register_type_resolver",
     # Unified analysis
     "UnifiedParameterAnalyzer",
     "UnifiedParameterInfo",

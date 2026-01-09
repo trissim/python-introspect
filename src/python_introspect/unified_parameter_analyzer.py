@@ -189,7 +189,12 @@ class UnifiedParameterAnalyzer:
                             default_value = param_info.default_value
                         else:
                             # Get current value from instance if it exists
-                            default_value = getattr(instance, param_name, param_info.default_value)
+                            # CRITICAL: Use object.__getattribute__ to bypass __getattribute__ overrides
+                            # This ensures we get the raw stored value, not a resolved/computed value
+                            try:
+                                default_value = object.__getattribute__(instance, param_name)
+                            except AttributeError:
+                                default_value = param_info.default_value
 
                         # Create parameter info with appropriate default value
                         all_params[param_name] = UnifiedParameterInfo(
@@ -216,10 +221,12 @@ class UnifiedParameterAnalyzer:
         unified_params = UnifiedParameterAnalyzer._analyze_dataclass_type(dataclass_type)
 
         # Update default values with current instance values
+        # CRITICAL: Always use object.__getattribute__ to bypass __getattribute__ overrides
+        # This ensures we get the raw stored value, not a resolved/computed value
         for name, param_info in unified_params.items():
             if hasattr(instance, name):
-                # For regular dataclasses, use normal getattr
-                current_value = getattr(instance, name)
+                # Bypass __getattribute__ to get raw stored value (not resolved)
+                current_value = object.__getattribute__(instance, name)
 
                 # Create new UnifiedParameterInfo with current value as default
                 unified_params[name] = UnifiedParameterInfo(
